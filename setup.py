@@ -26,7 +26,7 @@ except ImportError:
     quit(1)
 
 setuptools.setup(
-    name='python3_pydo',
+    name='pydolist',
     version=pydo.config.__version__,
     author='Connor Ruggles',
     author_email='conruggles@gmail.com',

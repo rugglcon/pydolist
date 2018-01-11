@@ -16,10 +16,10 @@ All you will need to run PyDo is Python 3.
 ## Installing
 ```
 # Installing system-wide with pip3:
-sudo pip3 install python3-pydo
+sudo pip3 install pydolist
 
 # Installing for your user:
-pip3 install --user python3-pydo
+pip3 install --user pydolist
 # then add $HOME/.local/bin to your path
 PATH="$PATH:$HOME/.local/bin"
 ```
