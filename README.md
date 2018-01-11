@@ -2,7 +2,7 @@
 A simple TODO app written in Python 3.
 
 ## Getting Started
-For development and testing, fork this repository. No special python packages or modules are needed. To run PyDo in the current directory, do:
+For development and testing, fork this repository. No special python packages or modules are needed. To run PyDo, first follow the installation instructions, then do:
 ```
 pydo
 
