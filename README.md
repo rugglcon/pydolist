@@ -3,24 +3,38 @@ A simple TODO app written in Python 3.
 
 ## Getting Started
 For development and testing, fork this repository. No special python packages or modules are needed. To run PyDo in the current directory, do:
-
 ```
-python3 pydo
+pydo
 
 # for help, run this
-python3 pydo -h
+pydo -h
 ```
 
 ### Prerequisites
 All you will need to run PyDo is Python 3.
 
-### Installing
+## Installing
 ```
-Coming soon :)
+# Installing system-wide with pip3:
+sudo pip3 install python3-pydo
+
+# Installing for your user:
+pip3 install --user python3-pydo
+# then add $HOME/.local/bin to your path
+PATH="$PATH:$HOME/.local/bin"
 ```
 
-## Deployment
-Current work is underplace to submit PyDo as a pip3 package available for installation. For now, refer to the instructions for manual installation.
+### Manual Installation
+Clone or download this repository then run:
+```
+# for system-wide use:
+sudo pip3 install .
+
+# user-only:
+pip3 install --user .
+# then add $HOME/.local/bin to your path
+PATH="$PATH:$HOME/.local/bin"
+```
 
 ## Contributing
 Please read CONTRIBUTING.md for details on submitting pull requests and issues.
