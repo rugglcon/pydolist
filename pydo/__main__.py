@@ -70,7 +70,7 @@ def setup_list(list_dest):
 def get_intent():
     """gets the intent of the user"""
     print("What would you like to do?\n")
-    return input("(l)ist tasks; (c)reate task; (d)elete task; (f)inish task: ")
+    return input("(l)ist tasks; (c)reate task; (d)elete task; (f)inish task; (q)uit\n> ")
 
 def print_all_tasks(list_object):
     """
@@ -147,6 +147,9 @@ def main():
             delete_task(task_list)
         elif usr_input == "f" or usr_input == "F":
             finish_task(task_list)
+        elif usr_input == "q" or usr_input == "Q":
+            print("Goodbye.")
+            sys.exit(0)
         else:
             print("Invalid option.")
 
