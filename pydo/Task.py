@@ -20,7 +20,7 @@ class Task:
     """
     A class that holds data about an individual task.
     """
-    def __init__(self, title: str, description: str, done=False):
+    def __init__(self, title, description, done=False):
         self.title = title
         self.description = description
         self.done = done
@@ -41,10 +41,10 @@ class Task:
         """returns True if done, False otherwise"""
         return self.done
 
-    def set_title(self, new_title: str):
+    def set_title(self, new_title):
         """sets the title of this task to the given title"""
         self.title = new_title
 
-    def set_description(self, new_desc: str):
+    def set_description(self, new_desc):
         """sets the description of this task to the given description"""
         self.description = new_desc

@@ -18,7 +18,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
 import json
-from Task import Task
+from . import Task
 
 class TaskList(list):
     """holds a list of Tasks"""
@@ -30,11 +30,10 @@ class TaskList(list):
         self._task_list = []
         with open(self._list_file, 'r') as json_file:
             data = json_file.read()
-            print(data)
             if data:
                 data = json.loads(data)
                 for tmp_task in data:
-                    self._task_list.append(Task(tmp_task["title"], \
+                    self._task_list.append(Task.Task(tmp_task["title"], \
                         tmp_task["description"], tmp_task["done"]))
 
     def __getitem__(self, index):
@@ -93,5 +92,5 @@ class TaskList(list):
         with open(self._list_file) as json_file:
             data = json.load(json_file)
             for tmp_task in data:
-                self._task_list.append(Task(tmp_task["title"], \
+                self._task_list.append(Task.Task(tmp_task["title"], \
                     tmp_task["description"], tmp_task["done"]))

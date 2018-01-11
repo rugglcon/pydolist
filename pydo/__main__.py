@@ -32,9 +32,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 import argparse
 import os
 import sys
-from List import TaskList
-from Task import Task
-import config
+from .List import TaskList
+from . import Task
+from . import config
 
 LIST_FILE = os.environ["HOME"] + "/.local/pydo/todo.json"
 
@@ -92,7 +92,7 @@ def create_task(list_object):
     print("--------")
     title = input("Title of new task: ")
     desc = input("Description of new task (leave blank for no description): ")
-    new_task = Task(title, desc)
+    new_task = Task.Task(title, desc)
     list_object.add_task(new_task)
     print("New Task successfully created.\n")
 
