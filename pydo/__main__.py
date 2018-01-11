@@ -70,7 +70,7 @@ def setup_list(list_dest):
 def get_intent():
     """gets the intent of the user"""
     print("What would you like to do?\n")
-    return input("(l)ist tasks; (c)reate task; (d)elete task; (f)inish task; (q)uit\n> ")
+    return input("(l)ist tasks; (c)reate task; (d)elete task; (f)inish task; (q)uit > ")
 
 def print_all_tasks(list_object):
     """
@@ -114,6 +114,18 @@ def finish_task(list_object):
     index = input("Which task to finish? (1 for first task, 2 for second, etc.)\n> ")
     list_object.finish_task(int(index) - 1)
 
+def show_w():
+    """prints the warranty section of GPL"""
+    clear()
+    print("THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT PERMITTED BY\n"
+          "APPLICABLE LAW.  EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT\n"
+          "HOLDERS AND/OR OTHER PARTIES PROVIDE THE PROGRAM \"AS IS\" WITHOUT WARRANTY\n"
+          "OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO,\n"
+          "THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR\n"
+          "PURPOSE.  THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE PROGRAM\n"
+          "IS WITH YOU.  SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF\n"
+          "ALL NECESSARY SERVICING, REPAIR OR CORRECTION.\n")
+
 def check_file(list_file):
     """checks for the existence of the todo list file"""
     list_file = os.path.expanduser(list_file)
@@ -137,6 +149,10 @@ def main():
     print("\n+-----------------+")
     print("| Welcome to pydo |")
     print("+-----------------+\n")
+    print("PyDo  Copyright (C) 2018  Connor Ruggles\n"
+          "This program comes with ABSOLUTELY NO WARRANTY; for details type `show w'.\n"
+          "This is free software, and you are welcome to redistribute it\n"
+          "under certain conditions; refer to the License for details.\n")
     while True:
         usr_input = get_intent()
         if usr_input == "l" or usr_input == "L":
@@ -150,6 +166,8 @@ def main():
         elif usr_input == "q" or usr_input == "Q":
             print("Goodbye.")
             sys.exit(0)
+        elif usr_input == "show w":
+            show_w()
         else:
             print("Invalid option.")
 
