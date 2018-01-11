@@ -4,3 +4,5 @@ __pycache__/
 .*.swp
 .mypy_cache/
 python3_pydo.egg-info/
+pydolist.egg-info/
+dist/
