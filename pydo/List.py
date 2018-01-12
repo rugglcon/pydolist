@@ -58,6 +58,7 @@ class TaskList(list):
     def finish_task(self, index):
         """finishes a task"""
         self._task_list[index].finish()
+        self.reload_tasks()
 
     def get_tasks(self):
         """retrieves all tasks in this task list"""
