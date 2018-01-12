@@ -32,9 +32,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 import argparse
 import os
 import sys
-from .List import TaskList
-from . import Task
 from . import config
+from . import utils
+from . import interactions
 
 LIST_FILE = os.environ["HOME"] + "/.local/pydo/todo.json"
 
@@ -47,10 +47,6 @@ def startup(args):
             help="Prints version number of pydo.")
     return arguments.parse_args(args)
 
-def clear():
-    """clears the screen"""
-    _ = os.system('clear')
-
 def process_args(args):
     """processes arguments"""
     list_dest = LIST_FILE
@@ -60,92 +56,13 @@ def process_args(args):
     if args.v:
         print("pydo " + config.__version__)
         sys.exit(0)
-    return setup_list(list_dest)
-
-def setup_list(list_dest):
-    """sets up the todo list, which should be a json file"""
-    check_file(list_dest)
-    return TaskList(list_dest)
-
-def get_intent():
-    """gets the intent of the user"""
-    print("What would you like to do?\n")
-    return input("(l)ist tasks; (c)reate task; (d)elete task; (f)inish task; (q)uit > ")
-
-def print_all_tasks(list_object):
-    """
-    calls a function to retrieve all
-    tasks, then prints them
-    """
-    clear()
-    print("All tasks:")
-    print("----------")
-    list_object.print_tasks()
-
-def create_task(list_object):
-    """
-    creates a task with user input of
-    title and description
-    """
-    clear()
-    print("New task")
-    print("--------")
-    title = input("Title of new task: ")
-    desc = input("Description of new task (leave blank for no description): ")
-    new_task = Task.Task(title, desc)
-    list_object.add_task(new_task)
-    print("New Task successfully created.\n")
-
-def delete_task(list_object):
-    """deletes the selected task"""
-    clear()
-    print("Deleting task")
-    print("-------------")
-    list_object.print_tasks()
-    index = input("Which task to delete? (1 for first task, 2 for second, etc.)\n> ")
-    list_object.delete_task(int(index) - 1)
-
-def finish_task(list_object):
-    """finishes the selected task"""
-    clear()
-    print("Finishing task")
-    print("--------------")
-    list_object.print_tasks()
-    index = input("Which task to finish? (1 for first task, 2 for second, etc.)\n> ")
-    list_object.finish_task(int(index) - 1)
-
-def show_w():
-    """prints the warranty section of GPL"""
-    clear()
-    print("THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT PERMITTED BY\n"
-          "APPLICABLE LAW.  EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT\n"
-          "HOLDERS AND/OR OTHER PARTIES PROVIDE THE PROGRAM \"AS IS\" WITHOUT WARRANTY\n"
-          "OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO,\n"
-          "THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR\n"
-          "PURPOSE.  THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE PROGRAM\n"
-          "IS WITH YOU.  SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF\n"
-          "ALL NECESSARY SERVICING, REPAIR OR CORRECTION.\n")
-
-def check_file(list_file):
-    """checks for the existence of the todo list file"""
-    list_file = os.path.expanduser(list_file)
-    if os.path.exists(list_file):
-        if not os.path.isfile(list_file):
-            print("Arguments with '-f' need to be a file.")
-            sys.exit(1)
-        if os.path.splitext(list_file)[1] != ".json":
-            print("File given must be a .json file.")
-            sys.exit(1)
-    else:
-        os.makedirs(os.path.abspath(os.path.dirname(list_file)), exist_ok=True)
-        with open(list_file, 'w+') as new_list:
-            new_list.close()
+    return utils.setup_list(list_dest)
 
 def main():
     """main"""
     arguments = startup(sys.argv[1:])
     task_list = process_args(arguments)
-    clear()
+    utils.clear()
     print("\n+-----------------+")
     print("| Welcome to pydo |")
     print("+-----------------+\n")
@@ -154,20 +71,20 @@ def main():
           "This is free software, and you are welcome to redistribute it\n"
           "under certain conditions; refer to the License for details.\n")
     while True:
-        usr_input = get_intent()
+        usr_input = interactions.get_intent()
         if usr_input == "l" or usr_input == "L":
-            print_all_tasks(task_list)
+            interactions.print_all_tasks(task_list)
         elif usr_input == "c" or usr_input == "C":
-            create_task(task_list)
+            interactions.create_task(task_list)
         elif usr_input == "d" or usr_input == "D":
-            delete_task(task_list)
+            interactions.delete_task(task_list)
         elif usr_input == "f" or usr_input == "F":
-            finish_task(task_list)
+            interactions.finish_task(task_list)
         elif usr_input == "q" or usr_input == "Q":
             print("Goodbye.")
             sys.exit(0)
         elif usr_input == "show w":
-            show_w()
+            interactions.show_w()
         else:
             print("Invalid option.")
 
