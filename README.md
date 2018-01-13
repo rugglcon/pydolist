@@ -51,10 +51,10 @@ PATH="$PATH:$HOME/.local/bin"
 
 ## Screenshots
 #### Welcome screen
-![png][https://raw.githubusercontent.com/rugglcon/pydo/master/assets/welcome.png]
+![png](https://raw.githubusercontent.com/rugglcon/pydo/master/assets/welcome.png)
 
 #### Listing all tasks
-![png][https://raw.githubusercontent.com/rugglcon/pydo/master/assets/list.png]
+![png](https://raw.githubusercontent.com/rugglcon/pydo/master/assets/list.png)
 
 ## Contributing
 Please read CONTRIBUTING.md for details on submitting pull requests and issues.
