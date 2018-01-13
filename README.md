@@ -16,6 +16,7 @@ All you will need to run PyDo is Python 3.
 ## Features
 As the description says, PyDo is very simple. Currently, the features are:
 * task storage in JSON format in ~/.local/pydo/todo.json
+* option to specify a different file to use to store lists at runtime (`-f` option)
 * very simple interface; runs forever with prompt (see screenshots)
 * show completion status of a task, in case a task is done but you don't want to delete it yet
 
