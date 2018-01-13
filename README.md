@@ -13,6 +13,19 @@ pydo -h
 ### Prerequisites
 All you will need to run PyDo is Python 3.
 
+## Features
+As the description says, PyDo is very simple. Currently, the features are:
+* task storage in JSON format in ~/.local/bin
+* very simple interface; runs forever with prompt (see screenshots)
+* show completion status of a task, in case a task is done but you don't want to delete it yet
+
+## Wishlist
+* TODO.txt support
+* Dropbox support
+* synced instances of TODO lists (probably need some sort of server)
+* email reminders about tasks
+* (extra wishlist) scan project source files for TODO comments and add them to the list
+
 ## Installing
 ```
 # Installing system-wide with pip3:
@@ -36,6 +49,13 @@ pip3 install --user .
 PATH="$PATH:$HOME/.local/bin"
 ```
 
+## Screenshots
+#### Welcome screen
+![png][https://raw.githubusercontent.com/rugglcon/pydo/master/assets/welcome.png]
+
+#### Listing all tasks
+![png][https://raw.githubusercontent.com/rugglcon/pydo/master/assets/list.png]
+
 ## Contributing
 Please read CONTRIBUTING.md for details on submitting pull requests and issues.
 
@@ -43,4 +63,4 @@ Please read CONTRIBUTING.md for details on submitting pull requests and issues.
 * Connor Ruggles
 
 ## License
-This project is licensed under the GNU GPLv3 - see LICENSE.md for details.
+This project is licensed under the GNU GPLv3.0 OR ANY LATER VERSION - see LICENSE.md for details.

@@ -26,6 +26,6 @@ Just a few steps for this:
     * reference an existing issue if it fixes one
     * only submit a PR with one commit; if there's more than one, just go ahead and close the current PR and open a new one with the squashed commits
     * if it doesn't fix an existing issue, explain what is fixed
-    * submit the PR against the master branch of the main repository; the release branch will get master merged into it as versions are, well, released
+    * submit the PR against the master branch of the main repository
 
 That's it! If you have any questions, feel free to email me at [conruggles@gmail.com](mailto:conruggles@gmail.com)

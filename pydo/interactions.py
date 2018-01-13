@@ -21,7 +21,7 @@ from . import utils
 def get_intent():
     """gets the intent of the user"""
     print("What would you like to do?\n")
-    return input("(l)ist tasks; (c)reate task; (d)elete task; (f)inish task; (q)uit > ")
+    return input("(l)ist tasks; (c)reate task; (d)elete task; (f)inish task; (q)uit\n> ")
 
 def print_all_tasks(list_object):
     """
