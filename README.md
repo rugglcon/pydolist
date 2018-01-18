@@ -15,17 +15,31 @@ All you will need to run PyDo is Python 3.
 
 ## Features
 As the description says, PyDo is very simple. Currently, the features are:
-* task storage in JSON format in ~/.local/pydo/todo.json
+* task storage in JSON format in `~/.local/pydo/todo.json`
+* optional config file in `~/.local/pydo/pydo.ini`
 * option to specify a different file to use to store lists at runtime (`-f` option)
+* option to specify a different file to use as a config file at runtime (`-c` option)
 * very simple interface; runs forever with prompt (see screenshots)
 * show completion status of a task, in case a task is done but you don't want to delete it yet
 
+### Config file format
+The configuration file should be placed in `~/.local/pydo/pydo.ini` (or another location that is specified at runtime with the `-c` option) with the following format:
+```
+[url]
+dest = user@serverip:/path/to/file.json
+```
+
+The program will retrieve this file upon startup if it exists, and send the local file to this destination if one is specified and the config file exists, all using `scp`. In order for this to work, it is required that you set up ssh key authentication with that server so as to not prompt a password input.
+
+If you want this to work between multiple instances, you should make sure the config file is the same on all those instances.
+
 ## Wishlist
-* TODO.txt support
-* Dropbox support
-* synced instances of TODO lists (probably need some sort of server)
-* email reminders about tasks
-* (extra wishlist) scan project source files for TODO comments and add them to the list
+- [ ] TODO.txt support
+- [ ] Dropbox support
+- [x] synced instances of TODO lists (probably need some sort of server)
+    * Syncs the entire TODO list file to a destination specified in a config file
+- [ ] email reminders about tasks
+- [ ] (extra wishlist) scan project source files for TODO comments and add them to the list
 
 ## Installing
 ```
