@@ -18,23 +18,22 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
 import json
+from . import file_utils
 from . import Task
 
 class TaskList(list):
     """holds a list of Tasks"""
 
-    def __init__(self, listFile):
+    def __init__(self, list_file, file_lock):
         """initializes this list based on the passed in file"""
         list.__init__(self)
-        self._list_file = listFile
+        self._list_file = list_file
+        self._file_lock = file_lock
         self._task_list = []
-        with open(self._list_file, 'r') as json_file:
-            data = json_file.read()
-            if data:
-                data = json.loads(data)
-                for tmp_task in data:
-                    self._task_list.append(Task.Task(tmp_task["title"], \
-                        tmp_task["description"], tmp_task["done"]))
+        self._file_lock.acquire()
+        file_utils.get_remote(self._list_file)
+        self.retrieve_tasks_from_file()
+        self._file_lock.release()
 
     def __getitem__(self, index):
         """implements the getitem method to iterate over task list"""
@@ -44,6 +43,20 @@ class TaskList(list):
     def __len__(self):
         """len method"""
         return len(self._task_list)
+
+    def destroy(self):
+        """performs final tasks before exiting"""
+        p = file_utils.send_remote(self._list_file)
+        return p
+
+    def retrieve_tasks_from_file(self):
+        """function name says it all"""
+        self._task_list = []
+        with open(self._list_file) as json_file:
+            data = json.load(json_file)
+            for tmp_task in data:
+                self._task_list.append(Task.Task(tmp_task["title"], \
+                    tmp_task["description"], tmp_task["done"], tmp_task["id"]))
 
     def add_task(self, task_to_add):
         """adds a task to this list"""
@@ -67,9 +80,9 @@ class TaskList(list):
     def print_tasks(self):
         """prints the list of tasks"""
         for _task in self._task_list:
-            print("Title:       {}".format(_task.get_title()))
-            print("Description: {}".format(_task.get_description()))
-            print("Done:        {}\n".format(str(_task.is_done())))
+            print("Title:       {}".format(_task.title))
+            print("Description: {}".format(_task.description))
+            print("Done:        {}\n".format(str(_task.done)))
 
     def reload_tasks(self):
         """
@@ -82,6 +95,7 @@ class TaskList(list):
         # temporary list
         for task_obj in self._task_list:
             tmp_list.append(task_obj.__dict__)
+        self._file_lock.acquire()
         with open(self._list_file, 'w') as outfile:
             # then dump that temp list to the file
             json.dump(tmp_list, outfile)
@@ -90,8 +104,5 @@ class TaskList(list):
         self._task_list = []
         # re-open the file, and add each entry as a
         # new Task
-        with open(self._list_file) as json_file:
-            data = json.load(json_file)
-            for tmp_task in data:
-                self._task_list.append(Task.Task(tmp_task["title"], \
-                    tmp_task["description"], tmp_task["done"]))
+        self.retrieve_tasks_from_file()
+        self._file_lock.release()

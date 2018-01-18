@@ -1,5 +1,5 @@
 """
-A class that holds data about an individual task.
+parses the pydo.conf file
 
 Copyright (C) 2018 Connor Ruggles
 
@@ -17,22 +17,19 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
-class Task:
-    """
-    A class that holds data about an individual task.
-    """
-    def __init__(self, title, description, done=False, task_id=None):
-        self.id = task_id
-        self.title = title
-        self.description = description
-        self.done = done
-        self.__dict__ = {
-            "id": self.id,
-            "title": self.title,
-            "description": self.description,
-            "done": self.done,
-        }
+import configparser
+import os
+import sys
 
-    def finish(self):
-        """sets this task to done"""
-        self.done = True
+CONFIG = configparser.ConfigParser()
+
+def parse_config(conf_dest):
+    """parses the config file for pydo at the passed in location"""
+    conf_dest = os.path.expanduser(conf_dest)
+    if os.path.exists(conf_dest):
+        if not os.path.isfile(conf_dest):
+            print("pydo: Conf file needs to be a file.")
+            sys.exit(1)
+        CONFIG.read(conf_dest)
+    else:
+        print("pydo: File " + conf_dest + " doesn't exist. Not using config file.")

@@ -23,10 +23,10 @@ def clear():
     """clears the screen"""
     _ = os.system('clear')
 
-def setup_list(list_dest):
+def setup_list(list_dest, file_lock):
     """sets up the todo list, which should be a json file"""
     check_file(list_dest)
-    return TaskList(list_dest)
+    return TaskList(list_dest, file_lock)
 
 def check_file(list_file):
     """checks for the existence of the todo list file"""

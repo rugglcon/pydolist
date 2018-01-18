@@ -32,17 +32,23 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 import argparse
 import os
 import sys
+import threading
 from . import config
 from . import utils
 from . import interactions
+from . import conf_parser
 
 LIST_FILE = os.environ["HOME"] + "/.local/pydo/todo.json"
+CONF_FILE = os.environ["HOME"] + "/.local/pydo/pydo.ini"
+FILE_LOCK = threading.RLock()
 
 def startup(args):
     """just prints a welcome message and gets arguments"""
     arguments = argparse.ArgumentParser(description="A simple terminal TODO app.")
     arguments.add_argument("-f", metavar="\"path/to/file\"", \
-            help="Path to a file named/placed differently than the default.")
+            help="Path to a list file named/placed differently than the default.")
+    arguments.add_argument("-c", metavar="\"path/to/file\"", \
+            help="Path to a conf file named/placed differently than the default.")
     arguments.add_argument("-v", action="store_true", \
             help="Prints version number of pydo.")
     return arguments.parse_args(args)
@@ -50,13 +56,18 @@ def startup(args):
 def process_args(args):
     """processes arguments"""
     list_dest = LIST_FILE
+    conf_dest = CONF_FILE
     if args.f:
         print("An alternate list file was given: ", args.f)
         list_dest = args.f
+    if args.c:
+        print("An alternate conf file was given: ", args.c)
+        conf_dest = args.c
     if args.v:
         print("pydo " + config.__version__)
         sys.exit(0)
-    return utils.setup_list(list_dest)
+    conf_parser.parse_config(conf_dest)
+    return utils.setup_list(list_dest, FILE_LOCK)
 
 def main():
     """main"""
@@ -81,6 +92,14 @@ def main():
         elif usr_input == "f" or usr_input == "F":
             interactions.finish_task(task_list)
         elif usr_input == "q" or usr_input == "Q":
+            print("\nWaiting for sync to finish...")
+            destroy_success = task_list.destroy()
+            if destroy_success == 0:
+                print("Success")
+            elif destroy_success is None:
+                pass
+            else:
+                print("There was a problem syncing the file.")
             print("Goodbye.")
             sys.exit(0)
         elif usr_input == "show w":
