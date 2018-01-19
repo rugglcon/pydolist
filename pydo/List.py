@@ -80,9 +80,10 @@ class TaskList(list):
     def print_tasks(self):
         """prints the list of tasks"""
         for _task in self._task_list:
-            print("Title:       {}".format(_task.title))
-            print("Description: {}".format(_task.description))
-            print("Done:        {}\n".format(str(_task.done)))
+            print("Title      : {}".format(_task.title))
+            if _task.description != "":
+                print("Description: {}".format(_task.description))
+            print("Done       : {}\n".format(str(_task.done)))
 
     def reload_tasks(self):
         """
