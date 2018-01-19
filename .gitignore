@@ -6,3 +6,4 @@ __pycache__/
 python3_pydo.egg-info/
 pydolist.egg-info/
 dist/
+tags
