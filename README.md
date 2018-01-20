@@ -39,6 +39,7 @@ If you want this to work between multiple instances, you should make sure the co
 - [x] synced instances of TODO lists (probably need some sort of server)
     * Syncs the entire TODO list file to a destination specified in a config file
 - [ ] email reminders about tasks
+- [ ] switch interface to be entirely curses-based (started on branch `curses`)
 - [ ] (extra wishlist) scan project source files for TODO comments and add them to the list
 
 ## Installing

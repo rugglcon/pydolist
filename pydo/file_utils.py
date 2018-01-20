@@ -27,8 +27,7 @@ def send_remote(list_file):
             p = subprocess.call(["scp", list_file, CONFIG["url"]["dest"]], stdout=devnull)
             devnull.close()
         return p
-    else:
-        return None
+    return None
 
 def get_remote(list_file):
     """gets the remote task file"""
@@ -37,5 +36,4 @@ def get_remote(list_file):
             p = subprocess.call(["scp", CONFIG["url"]["dest"], list_file], stdout=devnull)
             devnull.close()
         return p
-    else:
-        return None
+    return None
