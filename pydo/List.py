@@ -53,10 +53,12 @@ class TaskList(list):
         """function name says it all"""
         self._task_list = []
         with open(self._list_file) as json_file:
-            data = json.load(json_file)
-            for tmp_task in data:
-                self._task_list.append(Task.Task(tmp_task["title"], \
-                    tmp_task["description"], tmp_task["done"]))
+            data = json_file.read()
+            if data != '':
+                data = json.loads(data)
+                for tmp_task in data:
+                    self._task_list.append(Task.Task(tmp_task["title"], \
+                        tmp_task["description"], tmp_task["done"]))
 
     def add_task(self, task_to_add):
         """adds a task to this list"""
