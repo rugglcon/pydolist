@@ -46,8 +46,8 @@ class TaskList(list):
 
     def destroy(self):
         """performs final tasks before exiting"""
-        p = file_utils.send_remote(self._list_file)
-        return p
+        p_exit = file_utils.send_remote(self._list_file)
+        return p_exit
 
     def retrieve_tasks_from_file(self):
         """function name says it all"""
@@ -56,7 +56,7 @@ class TaskList(list):
             data = json.load(json_file)
             for tmp_task in data:
                 self._task_list.append(Task.Task(tmp_task["title"], \
-                    tmp_task["description"], tmp_task["done"], tmp_task["id"]))
+                    tmp_task["description"], tmp_task["done"]))
 
     def add_task(self, task_to_add):
         """adds a task to this list"""
@@ -77,13 +77,24 @@ class TaskList(list):
         """retrieves all tasks in this task list"""
         return self._task_list
 
-    def print_tasks(self):
+    def print_tasks(self, screen):
         """prints the list of tasks"""
+        index = 0
+        line = 3
         for _task in self._task_list:
-            print("Title      : {}".format(_task.title))
+            if _task.done:
+                done = 'x'
+            else:
+                done = ' '
+            screen.addstr(line, 0, "{} [{}] : {}".format(index, done, _task.title))
+            line += 1
             if _task.description != "":
-                print("Description: {}".format(_task.description))
-            print("Done       : {}\n".format(str(_task.done)))
+                screen.addstr(line, 0, "  - {}".format(_task.description))
+                line += 1
+            screen.addstr(line, 0, "")
+            line += 1
+            index += 1
+        return line
 
     def reload_tasks(self):
         """

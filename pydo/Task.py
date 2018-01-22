@@ -21,13 +21,11 @@ class Task:
     """
     A class that holds data about an individual task.
     """
-    def __init__(self, title, description, done=False, task_id=None):
-        self.id = task_id
+    def __init__(self, title, description, done=False):
         self.title = title
         self.description = description
         self.done = done
         self.__dict__ = {
-            "id": self.id,
             "title": self.title,
             "description": self.description,
             "done": self.done,
