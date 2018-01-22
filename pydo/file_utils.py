@@ -24,16 +24,16 @@ def send_remote(list_file):
     """syncs the remote task file with this one"""
     if "url" in CONFIG:
         with open("/dev/null", "w") as devnull:
-            p = subprocess.call(["scp", list_file, CONFIG["url"]["dest"]], stdout=devnull)
+            p_exit = subprocess.call(["scp", list_file, CONFIG["url"]["dest"]], stdout=devnull)
             devnull.close()
-        return p
+        return p_exit
     return None
 
 def get_remote(list_file):
     """gets the remote task file"""
     if "url" in CONFIG:
         with open("/dev/null", "w") as devnull:
-            p = subprocess.call(["scp", CONFIG["url"]["dest"], list_file], stdout=devnull)
+            p_exit = subprocess.call(["scp", CONFIG["url"]["dest"], list_file], stdout=devnull)
             devnull.close()
-        return p
+        return p_exit
     return None
