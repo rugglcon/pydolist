@@ -30,9 +30,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
 import argparse
+import curses
 import os
 import sys
 import threading
+from time import sleep
 from . import config
 from . import utils
 from . import interactions
@@ -50,7 +52,7 @@ def startup(args):
     arguments.add_argument("-c", metavar="\"path/to/file\"", \
             help="Path to a conf file named/placed differently than the default.")
     arguments.add_argument("-v", action="store_true", \
-            help="Prints version number of pydo.")
+            help="Prints version and license info of pydo.")
     return arguments.parse_args(args)
 
 def process_args(args):
@@ -65,15 +67,20 @@ def process_args(args):
         conf_dest = args.c
     if args.v:
         print("pydo " + config.__version__)
+        print("Copyright (C) 2018 Connor Ruggles")
+        print("License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>.\n")
+        print("This is free software: you are free to change and redistribute it.")
+        print("There is NO WARRANTY, to the extent permitted by law.")
         sys.exit(0)
     conf_parser.parse_config(conf_dest)
     return utils.setup_list(list_dest, FILE_LOCK)
 
-def main():
+arguments = startup(sys.argv[1:])
+task_list = process_args(arguments)
+
+def main(stdscr):
     """main"""
-    arguments = startup(sys.argv[1:])
-    task_list = process_args(arguments)
-    utils.clear()
+    # utils.clear()
     print("\n+-----------------+")
     print("| Welcome to pydo |")
     print("+-----------------+\n")
@@ -81,30 +88,44 @@ def main():
           "This program comes with ABSOLUTELY NO WARRANTY; for details type `show w'.\n"
           "This is free software, and you are welcome to redistribute it\n"
           "under certain conditions; refer to the License for details.\n")
+    stdscr.clear()
     while True:
-        usr_input = interactions.get_intent()
+        usr_input = interactions.get_intent(stdscr)
         if usr_input == "l" or usr_input == "L":
-            interactions.print_all_tasks(task_list)
+            stdscr.clear()
+            interactions.print_all_tasks(task_list, stdscr)
         elif usr_input == "c" or usr_input == "C":
-            interactions.create_task(task_list)
+            stdscr.clear()
+            interactions.create_task(task_list, stdscr)
         elif usr_input == "d" or usr_input == "D":
-            interactions.delete_task(task_list)
+            stdscr.clear()
+            interactions.delete_task(task_list, stdscr)
         elif usr_input == "f" or usr_input == "F":
-            interactions.finish_task(task_list)
+            stdscr.clear()
+            interactions.finish_task(task_list, stdscr)
         elif usr_input == "q" or usr_input == "Q":
-            print("\nWaiting for sync to finish...")
+            stdscr.clear()
+            stdscr.addstr(0, 1, "Waiting for sync to finish...")
+            stdscr.refresh()
+            # print("\nWaiting for sync to finish...")
             destroy_success = task_list.destroy()
             if destroy_success == 0:
-                print("Success")
+                # print("Success")
+                stdscr.addstr(1, 1, "Success")
+                stdscr.refresh()
             elif destroy_success is None:
                 pass
             else:
-                print("There was a problem syncing the file.")
-            print("Goodbye.")
+                # print("There was a problem syncing the file.")
+                stdscr.addstr(1, 1, "There was a problem syncing the file.")
+                stdscr.refresh()
+            # print("Goodbye.")
+            stdscr.addstr(2, 1, "Goodbye.")
+            stdscr.refresh()
+            sleep(2)
             sys.exit(0)
-        elif usr_input == "show w":
-            interactions.show_w()
         else:
-            print("Invalid option.")
+            # print("Invalid option.")
+            stdscr.addstr(curses.LINES - 2, 6, "Invalid option.")
 
-main()
+curses.wrapper(main)

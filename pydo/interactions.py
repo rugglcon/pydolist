@@ -15,64 +15,86 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
+import curses
 from . import Task
 from . import utils
 
-def get_intent():
-    """gets the intent of the user"""
-    print("What would you like to do?\n")
-    return input("(l)ist tasks; (c)reate task; (d)elete task; (f)inish task; (q)uit\n> ")
+NUM_KEYS = {
+    '48' : '0',
+    '49' : '1',
+    '50' : '2',
+    '51' : '3',
+    '52' : '4',
+    '53' : '5',
+    '54' : '6',
+    '55' : '7',
+    '56' : '8',
+    '57' : '9'
+}
 
-def print_all_tasks(list_object):
+def get_intent(screen):
+    """gets the intent of the user"""
+    print_help(screen)
+    return screen.getkey()
+
+def print_help(screen):
+    """prints the standard help message"""
+    screen.addstr(curses.LINES - 1, 0, "(l)ist tasks; (c)reate task; (d)elete task; (f)inish task; (q)uit")
+    screen.addstr(curses.LINES - 2, 0, "Help:")
+    screen.refresh()
+
+def print_all_tasks(list_object, screen):
     """
     calls a function to retrieve all
     tasks, then prints them
     """
-    utils.clear()
-    print("All tasks:")
-    print("----------")
-    list_object.print_tasks()
+    screen.addstr(0, 0, "All tasks")
+    screen.addstr(1, 0, "---------")
+    list_object.print_tasks(screen)
+    print_help(screen)
 
-def create_task(list_object):
+def create_task(list_object, screen):
     """
     creates a task with user input of
     title and description
     """
-    utils.clear()
-    print("New task")
-    print("--------")
-    title = input("Title of new task: ")
-    desc = input("Description of new task (leave blank for no description): ")
-    new_task = Task.Task(title, desc)
+    screen.addstr(0, 0, "New task")
+    screen.addstr(1, 0, "--------")
+    screen.addstr(3, 0, "Title of new task: ")
+    curses.echo()
+    screen.refresh()
+    title = screen.getstr(3, 19)
+    desc_str = "Description of new task (leave blank for no description): "
+    desc_len = len(desc_str)
+    screen.addstr(4, 0, desc_str)
+    desc = screen.getstr(4, desc_len)
+    curses.noecho()
+    new_task = Task.Task(title.decode("utf-8"), desc.decode("utf-8"))
     list_object.add_task(new_task)
-    print("New Task successfully created.\n")
+    screen.clear()
+    print_all_tasks(list_object, screen)
+    print_help(screen)
 
-def delete_task(list_object):
+def delete_task(list_object, screen):
     """deletes the selected task"""
-    utils.clear()
-    print("Deleting task")
-    print("-------------")
-    list_object.print_tasks()
-    index = input("Which task to delete? (1 for first task, 2 for second, etc.)\n> ")
-    list_object.delete_task(int(index) - 1)
+    screen.addstr(0, 0, "Deleting task")
+    screen.addstr(1, 0, "-------------")
+    cur_line = list_object.print_tasks(screen)
+    screen.addstr(cur_line + 1, 0, "Which task to delete? > ")
+    index = screen.getch()
+    screen.refresh()
+    list_object.delete_task(int(NUM_KEYS[str(index)]))
+    screen.clear()
+    print_all_tasks(list_object, screen)
+    print_help(screen)
 
-def finish_task(list_object):
+def finish_task(list_object, screen):
     """finishes the selected task"""
-    utils.clear()
-    print("Finishing task")
-    print("--------------")
-    list_object.print_tasks()
-    index = input("Which task to finish? (1 for first task, 2 for second, etc.)\n> ")
+    screen.addstr(0, 0, "Finishing task")
+    screen.addstr(1, 0, "--------------")
+    cur_line = list_object.print_tasks(screen)
+    screen.addstr(cur_line + 1, 0, "Which task to finish? > ")
+    index = screen.getch()
+    screen.refresh()
     list_object.finish_task(int(index) - 1)
-
-def show_w():
-    """prints the warranty section of GPL"""
-    utils.clear()
-    print("THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT PERMITTED BY\n"
-          "APPLICABLE LAW.  EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT\n"
-          "HOLDERS AND/OR OTHER PARTIES PROVIDE THE PROGRAM \"AS IS\" WITHOUT WARRANTY\n"
-          "OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO,\n"
-          "THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR\n"
-          "PURPOSE.  THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE PROGRAM\n"
-          "IS WITH YOU.  SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF\n"
-          "ALL NECESSARY SERVICING, REPAIR OR CORRECTION.\n")
+    print_help(screen)
