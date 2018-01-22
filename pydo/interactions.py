@@ -16,8 +16,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
 import curses
+import sys
+from time import sleep
 from . import Task
-from . import utils
 
 NUM_KEYS = {
     '48' : '0',
@@ -35,12 +36,12 @@ NUM_KEYS = {
 def get_intent(screen):
     """gets the intent of the user"""
     print_help(screen)
-    return screen.getkey()
+    return screen.getch()
 
 def print_help(screen):
     """prints the standard help message"""
-    screen.addstr(curses.LINES - 1, 0, "(l)ist tasks; (c)reate task; (d)elete task; (f)inish task; (q)uit")
-    screen.addstr(curses.LINES - 2, 0, "Help:")
+    screen.addstr(screen.getmaxyx()[0] - 1, 0, \
+        "(l)ist tasks; (c)reate task; (d)elete task; (f)inish task; (q)uit")
     screen.refresh()
 
 def print_all_tasks(list_object, screen):
@@ -48,6 +49,7 @@ def print_all_tasks(list_object, screen):
     calls a function to retrieve all
     tasks, then prints them
     """
+    y, x = screen.getmaxyx()
     screen.addstr(0, 0, "All tasks")
     screen.addstr(1, 0, "---------")
     list_object.print_tasks(screen)
@@ -73,28 +75,76 @@ def create_task(list_object, screen):
     list_object.add_task(new_task)
     screen.clear()
     print_all_tasks(list_object, screen)
-    print_help(screen)
 
 def delete_task(list_object, screen):
     """deletes the selected task"""
+    y, x = screen.getmaxyx()
     screen.addstr(0, 0, "Deleting task")
     screen.addstr(1, 0, "-------------")
     cur_line = list_object.print_tasks(screen)
-    screen.addstr(cur_line + 1, 0, "Which task to delete? > ")
+    screen.addstr(y - 3, 0, "Which task to delete? > ")
     index = screen.getch()
+    if index == 27:
+        screen.clear()
+        print_all_tasks(list_object, screen)
+        return
     screen.refresh()
     list_object.delete_task(int(NUM_KEYS[str(index)]))
     screen.clear()
     print_all_tasks(list_object, screen)
-    print_help(screen)
 
 def finish_task(list_object, screen):
     """finishes the selected task"""
+    y, x = screen.getmaxyx()
     screen.addstr(0, 0, "Finishing task")
     screen.addstr(1, 0, "--------------")
     cur_line = list_object.print_tasks(screen)
-    screen.addstr(cur_line + 1, 0, "Which task to finish? > ")
+    screen.addstr(y - 3, 0, "Which task to finish? > ")
     index = screen.getch()
+    if index == 27:
+        screen.clear()
+        print_all_tasks(list_object, screen)
+        return
     screen.refresh()
     list_object.finish_task(int(index) - 1)
-    print_help(screen)
+    print_all_tasks(list_object, screen)
+
+def action_loop(list_object, screen, usr_input, int_input):
+    """does the main work of the main loop"""
+    max_y, max_x = screen.getmaxyx()
+    if int_input == curses.KEY_RESIZE:
+        if curses.is_term_resized(max_y, max_x):
+            max_y, max_x = screen.getmaxyx()
+            screen.clear()
+            curses.resizeterm(max_y, max_x)
+            screen.refresh()
+            print_all_tasks(list_object, screen)
+    elif usr_input == 'l':
+        screen.clear()
+        print_all_tasks(list_object, screen)
+    elif usr_input == 'c':
+        screen.clear()
+        create_task(list_object, screen)
+    elif usr_input == 'd':
+        screen.clear()
+        delete_task(list_object, screen)
+    elif usr_input == 'f':
+        screen.clear()
+        finish_task(list_object, screen)
+    elif usr_input == 'q':
+        screen.clear()
+        screen.addstr(0, 0, "Waiting for sync to finish...")
+        screen.refresh()
+        destroy_success = list_object.destroy()
+        if destroy_success == 0:
+            screen.addstr(1, 0, "Success")
+            screen.refresh()
+        elif destroy_success is None:
+            pass
+        else:
+            screen.addstr(1, 0, "There was a problem syncing the file.")
+            screen.refresh()
+        screen.addstr(2, 0, "Goodbye.")
+        screen.refresh()
+        sleep(2)
+        sys.exit(0)

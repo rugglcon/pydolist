@@ -34,7 +34,6 @@ import curses
 import os
 import sys
 import threading
-from time import sleep
 from . import config
 from . import utils
 from . import interactions
@@ -75,57 +74,39 @@ def process_args(args):
     conf_parser.parse_config(conf_dest)
     return utils.setup_list(list_dest, FILE_LOCK)
 
-arguments = startup(sys.argv[1:])
-task_list = process_args(arguments)
+ARGUMENTS = startup(sys.argv[1:])
+TASK_LIST = process_args(ARGUMENTS)
+KEYS_OKAY = {
+    '113' : 'q',
+    '813' : 'q',
+    '108' : 'l',
+    '768' : 'l',
+    '99' : 'c',
+    '67' : 'c',
+    '100' : 'd',
+    '680' : 'd',
+    '102' : 'f',
+    '702' : 'f',
+    str(curses.KEY_RESIZE) : curses.KEY_RESIZE
+}
 
 def main(stdscr):
     """main"""
-    # utils.clear()
-    print("\n+-----------------+")
-    print("| Welcome to pydo |")
-    print("+-----------------+\n")
-    print("PyDo  Copyright (C) 2018  Connor Ruggles\n"
-          "This program comes with ABSOLUTELY NO WARRANTY; for details type `show w'.\n"
-          "This is free software, and you are welcome to redistribute it\n"
-          "under certain conditions; refer to the License for details.\n")
+    curses.init_pair(1, curses.COLOR_RED, curses.COLOR_BLACK)
     stdscr.clear()
+    max_y, max_x = stdscr.getmaxyx()
+    max_pad_size = max_y - 6
+    interactions.print_all_tasks(TASK_LIST, stdscr)
     while True:
-        usr_input = interactions.get_intent(stdscr)
-        if usr_input == "l" or usr_input == "L":
-            stdscr.clear()
-            interactions.print_all_tasks(task_list, stdscr)
-        elif usr_input == "c" or usr_input == "C":
-            stdscr.clear()
-            interactions.create_task(task_list, stdscr)
-        elif usr_input == "d" or usr_input == "D":
-            stdscr.clear()
-            interactions.delete_task(task_list, stdscr)
-        elif usr_input == "f" or usr_input == "F":
-            stdscr.clear()
-            interactions.finish_task(task_list, stdscr)
-        elif usr_input == "q" or usr_input == "Q":
-            stdscr.clear()
-            stdscr.addstr(0, 1, "Waiting for sync to finish...")
-            stdscr.refresh()
-            # print("\nWaiting for sync to finish...")
-            destroy_success = task_list.destroy()
-            if destroy_success == 0:
-                # print("Success")
-                stdscr.addstr(1, 1, "Success")
-                stdscr.refresh()
-            elif destroy_success is None:
-                pass
-            else:
-                # print("There was a problem syncing the file.")
-                stdscr.addstr(1, 1, "There was a problem syncing the file.")
-                stdscr.refresh()
-            # print("Goodbye.")
-            stdscr.addstr(2, 1, "Goodbye.")
-            stdscr.refresh()
-            sleep(2)
-            sys.exit(0)
+        max_y, max_x = stdscr.getmaxyx()
+        max_pad_size = max_y - 6
+        int_input = interactions.get_intent(stdscr)
+        usr_input = str(int_input)
+        if usr_input in KEYS_OKAY or int_input == curses.KEY_RESIZE:
+            usr_input = KEYS_OKAY[usr_input]
+            interactions.action_loop(TASK_LIST, stdscr, usr_input, int_input)
         else:
-            # print("Invalid option.")
-            stdscr.addstr(curses.LINES - 2, 6, "Invalid option.")
+            stdscr.addstr(max_y - 2, 0, "Invalid option: {}".format(usr_input), \
+                 curses.color_pair(1))
 
 curses.wrapper(main)

@@ -82,12 +82,16 @@ class TaskList(list):
         index = 0
         line = 3
         for _task in self._task_list:
-            screen.addstr(line, 0, "{}          : {}".format(index, _task.title))
+            if _task.done:
+                done = 'x'
+            else:
+                done = ' '
+            screen.addstr(line, 0, "{} [{}] : {}".format(index, done, _task.title))
             line += 1
             if _task.description != "":
-                screen.addstr(line, 0, "Description: {}".format(_task.description))
+                screen.addstr(line, 0, "  - {}".format(_task.description))
                 line += 1
-            screen.addstr(line, 0, "Done       : {}\n".format(str(_task.done)))
+            screen.addstr(line, 0, "")
             line += 1
             index += 1
         return line
