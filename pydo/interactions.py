@@ -40,8 +40,13 @@ def get_intent(screen):
 
 def print_help(screen):
     """prints the standard help message"""
-    screen.addstr(screen.getmaxyx()[0] - 1, 0, \
-        "(l)ist tasks; (c)reate task; (d)elete task; (f)inish task; (q)uit")
+    y, x = screen.getmaxyx()
+    help_msg = "(l)ist tasks; (c)reate task; (d)elete task; (f)inish task; (q)uit"
+    if x > len(help_msg):
+        screen.addstr(y - 1, 0, help_msg)
+    else:
+        screen.addstr(y - 2, 0, help_msg[0:x - 1])
+        screen.addstr(y - 1, 0, help_msg[x:])
     screen.refresh()
 
 def print_all_tasks(list_object, screen):
@@ -50,6 +55,8 @@ def print_all_tasks(list_object, screen):
     tasks, then prints them
     """
     y, x = screen.getmaxyx()
+    screen.clear()
+    screen.refresh()
     screen.addstr(0, 0, "All tasks")
     screen.addstr(1, 0, "---------")
     list_object.print_tasks(screen)
@@ -113,12 +120,11 @@ def action_loop(list_object, screen, usr_input, int_input):
     """does the main work of the main loop"""
     max_y, max_x = screen.getmaxyx()
     if int_input == curses.KEY_RESIZE:
-        if curses.is_term_resized(max_y, max_x):
-            max_y, max_x = screen.getmaxyx()
-            screen.clear()
-            curses.resizeterm(max_y, max_x)
-            screen.refresh()
-            print_all_tasks(list_object, screen)
+        max_y, max_x = screen.getmaxyx()
+        screen.clear()
+        curses.resize_term(max_y, max_x)
+        screen.refresh()
+        print_all_tasks(list_object, screen)
     elif usr_input == 'l':
         screen.clear()
         print_all_tasks(list_object, screen)

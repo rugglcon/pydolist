@@ -95,11 +95,9 @@ def main(stdscr):
     curses.init_pair(1, curses.COLOR_RED, curses.COLOR_BLACK)
     stdscr.clear()
     max_y, max_x = stdscr.getmaxyx()
-    max_pad_size = max_y - 6
     interactions.print_all_tasks(TASK_LIST, stdscr)
     while True:
         max_y, max_x = stdscr.getmaxyx()
-        max_pad_size = max_y - 6
         int_input = interactions.get_intent(stdscr)
         usr_input = str(int_input)
         if usr_input in KEYS_OKAY or int_input == curses.KEY_RESIZE:
