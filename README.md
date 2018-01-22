@@ -19,7 +19,7 @@ As the description says, PyDo is very simple. Currently, the features are:
 * optional config file in `~/.local/pydo/pydo.ini`
 * option to specify a different file to use to store lists at runtime (`-f` option)
 * option to specify a different file to use as a config file at runtime (`-c` option)
-* very simple interface; runs forever with prompt (see screenshots)
+* very simple curses interface; runs forever with prompt (see screenshots)
 * show completion status of a task, in case a task is done but you don't want to delete it yet
 
 ### Config file format
@@ -39,7 +39,7 @@ If you want this to work between multiple instances, you should make sure the co
 - [x] synced instances of TODO lists (probably need some sort of server)
     * Syncs the entire TODO list file to a destination specified in a config file
 - [ ] email reminders about tasks
-- [ ] switch interface to be entirely curses-based (started on branch `curses`)
+- [x] switch interface to be entirely curses-based (started on branch `curses`)
 - [ ] (extra wishlist) scan project source files for TODO comments and add them to the list
 
 ## Installing
