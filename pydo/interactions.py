@@ -113,7 +113,7 @@ def finish_task(list_object, screen):
         print_all_tasks(list_object, screen)
         return
     screen.refresh()
-    list_object.finish_task(int(index) - 1)
+    list_object.finish_task(int(NUM_KEYS[str(index)]))
     print_all_tasks(list_object, screen)
 
 def action_loop(list_object, screen, usr_input, int_input):
