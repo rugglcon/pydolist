@@ -46,6 +46,7 @@ class TaskList(list):
 
     def destroy(self):
         """performs final tasks before exiting"""
+        self.reload_tasks()
         p_exit = file_utils.send_remote(self._list_file)
         return p_exit
 
@@ -114,6 +115,10 @@ class TaskList(list):
             # then dump that temp list to the file
             json.dump(tmp_list, outfile)
             outfile.close()
+        with open(self._list_file + ".bak", 'w') as outfile_bak:
+            # create a backup list in case something goes wrong
+            json.dump(tmp_list, outfile_bak)
+            outfile_bak.close()
         # reset the task list
         self._task_list = []
         # re-open the file, and add each entry as a
